@@ -37,7 +37,7 @@ size_t          buffer_block_put(t_buffer_block *bufblk,
     return (can_fit);
 }
 
-size_t          buffer_block_pull(t_buffer_block *bufblk, char *buf, size_t l)
+size_t          buffer_block_peek(t_buffer_block *bufblk, char *buf, size_t l)
 {
     size_t  can_pull;
 
@@ -47,6 +47,14 @@ size_t          buffer_block_pull(t_buffer_block *bufblk, char *buf, size_t l)
     if (can_pull > l)
         can_pull = l;
     memcpy(buf, bufblk->data_start, can_pull);
-    bufblk->data_start += can_pull;
     return (can_pull);
+}
+
+size_t          buffer_block_pull(t_buffer_block *bufblk, char *buf, size_t l)
+{
+    size_t  available;
+
+    available = buffer_block_peek(bufblk, buf, l);
+    bufblk->data_start += available;
+    return (available);
 }

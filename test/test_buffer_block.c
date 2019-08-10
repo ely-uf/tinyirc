@@ -47,10 +47,9 @@ int     test_buffer_block_put(void)
 int     test_buffer_block_pull(void)
 {
     t_buffer_block  *blk;
-    char            buf[32];
+    char            buf[32] = {0};
     size_t          pull;
 
-    memset(buf, 0, sizeof(buf));
     blk = buffer_block_new();
     buffer_block_put(blk, "12345", 5);
     pull = buffer_block_pull(blk, buf, sizeof(buf));
@@ -67,6 +66,30 @@ int     test_buffer_block_pull(void)
             "data returned");
     ASSERT(memcmp(buf, "12345", 5) == 0, "buffer_block_pull returns data "
             "continuously");
+    free(blk);
+    return (0);
+}
+
+int     test_buffer_block_peek(void)
+{
+    t_buffer_block  *blk;
+    char            buf[32] = {0};
+    size_t          peek;
+
+    blk = buffer_block_new();
+    buffer_block_put(blk, "12345", 5);
+    peek = buffer_block_peek(blk, buf, sizeof(buf));
+    ASSERT(peek == 5, "buffer_block_peek reports valid amount of data peeked");
+    ASSERT(memcmp(buf, "12345", 5) == 0, "buffer_block_peek returns data correctly");
+
+    peek = buffer_block_peek(blk, buf, 3);
+    ASSERT(peek == 3, "buffer_block_peek does not exceed the buffer provided");
+    ASSERT(memcmp(buf, "123", 3) == 0, "buffer_block_peek writes correctly to limited buffers");
+
+    peek = buffer_block_peek(blk, buf + 3, 2);
+    ASSERT(peek == 2, "buffer_block_peek reports proper length of leftover data returned");
+    ASSERT(memcmp(buf, "12312", 5) == 0, "buffer_block_peek does not delete any data from buffer");
+
     free(blk);
     return (0);
 }
@@ -92,6 +115,7 @@ int     test_buffer_block(void)
     ret |= test_buffer_block_new();
     ret |= test_buffer_block_put();
     ret |= test_buffer_block_pull();
+    ret |= test_buffer_block_peek();
     ret |= test_buffer_block_full();
     return (ret);
 }

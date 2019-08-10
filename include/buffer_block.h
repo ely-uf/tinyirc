@@ -23,5 +23,6 @@ size_t          buffer_block_put(t_buffer_block *bufblk,
                                 const char *data,
                                 size_t l);
 size_t          buffer_block_pull(t_buffer_block *bufblk, char *buf, size_t l);
+size_t          buffer_block_peek(t_buffer_block *bufblk, char *buf, size_t l);
 
 #endif
