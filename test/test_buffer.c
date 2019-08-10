@@ -1,5 +1,6 @@
 #include "buffer.h"
 #include "test_base.h"
+#include <string.h>
 
 static size_t   buffer_blocks_in_buffer(t_buffer *buf)
 {
@@ -50,8 +51,19 @@ int     test_buffer_put(void)
 int     test_buffer_pull(void)
 {
     t_buffer    buf;
+    ssize_t     pulled;
+    const char  zero_buf[32] = {0};
+    char        pull_buf[32];
 
     buffer_init(&buf);
+    buffer_put(&buf, zero_buf, sizeof(zero_buf));
+
+    pulled = buffer_pull(&buf, pull_buf, sizeof(pull_buf));
+    ASSERT(pulled == sizeof(zero_buf), "buffer_pull should pull all the data it has if size allows it");
+    ASSERT(memcmp(pull_buf, zero_buf, sizeof(zero_buf)) == 0, "buffer_pull should return uncorrupted data");
+    pulled = buffer_pull(&buf, pull_buf, sizeof(pull_buf));
+    ASSERT(pulled == 0, "buffer_pull has nothing to pull if buffer is empty");
+    ASSERT(memcmp(pull_buf, zero_buf, sizeof(zero_buf)) == 0, "buffer_pull should not modify the buffer passed to it in case it has nothing to pull");
 
     return (0);
 }
