@@ -24,7 +24,7 @@ int         vlist_init(t_vlist *v, size_t elem_size, char *type)
     v->len = 0;
     v->cap = VLIST_INITIAL_CAP;
     v->elem_size = elem_size;
-    strncpy((char*)v->type, type ?: "opaque", sizeof(v->type));
+    strncpy((char*)v->type, type ? type : "opaque", sizeof(v->type));
     return (0);
 }
 
