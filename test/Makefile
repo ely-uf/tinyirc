@@ -1,8 +1,8 @@
 NAME = test
-TESTED_SRC = ../util/buffer_block.c ../util/buffer.c
-SRC = test_main.c $(TESTED_SRC) test_buffer_block.c test_buffer.c
+TESTED_SRC = ../util/buffer_block.c ../util/buffer.c ../util/vlist.c
+SRC = test_main.c $(TESTED_SRC) test_buffer_block.c test_buffer.c test_vlist.c
 OBJ = $(SRC:.c=.o)
-CFLAGS = -Wall -Werror -Wextra -pedantic -std=c11 -I ../include
+CFLAGS = -Wall -Werror -Wextra -Wno-gnu-statement-expression -pedantic -std=c11 -I ../include
 CC = gcc
 
 all: $(NAME)
