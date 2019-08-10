@@ -8,6 +8,11 @@ int     buffer_init(t_buffer *buf)
     return (0);
 }
 
+bool    buffer_is_empty(t_buffer *buf)
+{
+    return (buf->bytes == 0);
+}
+
 ssize_t buffer_put(t_buffer *buf, const char *data, size_t len)
 {
     ssize_t         put;
