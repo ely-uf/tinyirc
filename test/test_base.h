@@ -3,6 +3,8 @@
 
 # include <stdio.h>
 
-# define ASSERT(cond, msg) if (!(cond)) printf("FAIL: %s [%s]\n", msg, #cond);
+# define ASSERT_FMT "FAIL: %s [%s]\n"
+# define ASSERT_F(cond, msg) printf(ASSERT_FMT, msg, #cond); return (-1);
+# define ASSERT(cond, msg) if (!(cond)) do { ASSERT_F(cond, msg); } while (0)
 
 #endif
