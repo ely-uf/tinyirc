@@ -56,6 +56,20 @@ int     test_buffer_pull(void)
     return (0);
 }
 
+int     test_buffer_is_empty(void)
+{
+    t_buffer    buf;
+    char        pull_buf[16];
+
+    buffer_init(&buf);
+    ASSERT(buffer_is_empty(&buf), "Freshly initialized buffer is empty.");
+    buffer_put(&buf, "test", 4);
+    ASSERT(!buffer_is_empty(&buf), "Buffer is not empty after valid buffer_put.");
+    buffer_pull(&buf, pull_buf, sizeof(pull_buf));
+    ASSERT(buffer_is_empty(&buf), "Buffer is empty after all data being pulled from it.");
+    return (0);
+}
+
 int     test_buffer(void)
 {
     int     ret;
@@ -64,6 +78,7 @@ int     test_buffer(void)
     ret |= test_buffer_init();
     ret |= test_buffer_put();
     ret |= test_buffer_pull();
+    ret |= test_buffer_is_empty();
 
     return (ret);
 }
