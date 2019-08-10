@@ -20,8 +20,15 @@ ssize_t buffer_put(t_buffer *buf, const char *data, size_t len)
     t_buffer_block  *currblk;
 
     put = 0;
+    if (!buf->first)
+    {
+        buf->first = buffer_block_new();
+        if (!buf->first)
+            return (-1);
+        buf->last = buf->first;
+    }
     currblk = buf->last;
-    while (len)
+    while ((size_t)put < len)
     {
         if (buffer_block_full(currblk))
         {
@@ -29,11 +36,11 @@ ssize_t buffer_put(t_buffer *buf, const char *data, size_t len)
             if (!currblk->next)
                 return (put ? put : -1);
             currblk = currblk->next;
+            buf->last = currblk;
         }
-        put_once = buffer_block_put(currblk, data, len);
+        put_once = buffer_block_put(currblk, data + put, len - put);
         put += put_once;
-        data += put_once;
-        len -= put_once;
+        buf->bytes += put_once;
     }
     return (put);
 }
@@ -47,18 +54,24 @@ ssize_t buffer_pull(t_buffer *buf, char *data, size_t len)
 
     pulled = 0;
     currblk = buf->first;
-    while ((size_t)pulled <= len)
+    while ((size_t)pulled < len)
     {
         if (!currblk)
+        {
+            buf->first = NULL;
+            buf->last = NULL;
             return (pulled);
+        }
         pulled_once = buffer_block_pull(currblk, data + pulled, len - pulled);
         if (!pulled_once)
         {
             next = currblk->next;
             free(currblk);
             currblk = next;
+            buf->first = currblk;
         }
         pulled += pulled_once;
+        buf->bytes -= pulled_once;
     }
     return (pulled);
 }
