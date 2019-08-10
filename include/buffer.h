@@ -16,8 +16,6 @@ typedef struct  s_buffer
 int     buffer_init(t_buffer *buf);
 ssize_t buffer_put(t_buffer *buf, const char *data, size_t len);
 ssize_t buffer_pull(t_buffer *buf, char *data, size_t len);
-ssize_t buffer_write(t_buffer *buf, int fd);
-ssize_t buffer_read(t_buffer *buf, int fd);
 bool    buffer_is_empty(t_buffer *buf);
 
 #endif
