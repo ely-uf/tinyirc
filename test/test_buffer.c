@@ -54,6 +54,7 @@ int     test_buffer_pull(void)
     ssize_t     pulled;
     const char  zero_buf[32] = {0};
     char        pull_buf[32];
+    char        big_buffer[BUF_BLK_LEN * 4] = {0};
 
     buffer_init(&buf);
     buffer_put(&buf, zero_buf, sizeof(zero_buf));
@@ -64,6 +65,15 @@ int     test_buffer_pull(void)
     pulled = buffer_pull(&buf, pull_buf, sizeof(pull_buf));
     ASSERT(pulled == 0, "buffer_pull has nothing to pull if buffer is empty");
     ASSERT(memcmp(pull_buf, zero_buf, sizeof(zero_buf)) == 0, "buffer_pull should not modify the buffer passed to it in case it has nothing to pull");
+
+    buffer_put(&buf, big_buffer, sizeof(big_buffer));
+    pulled = 0;
+    for (size_t pulled_once;
+         (pulled_once = buffer_pull(&buf, pull_buf, sizeof(pull_buf))) != 0;
+         pulled += pulled_once);
+
+    ASSERT(pulled == sizeof(big_buffer), "buffer_pull should handle large amounts of data being pulled");
+    ASSERT(buffer_is_empty(&buf), "Buffer should be empty");
 
     return (0);
 }
