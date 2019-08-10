@@ -42,11 +42,11 @@ ssize_t buffer_pull(t_buffer *buf, char *data, size_t len)
 
     pulled = 0;
     currblk = buf->first;
-    while (len)
+    while ((size_t)pulled <= len)
     {
         if (!currblk)
             return (pulled);
-        pulled_once = buffer_block_pull(currblk, data, len);
+        pulled_once = buffer_block_pull(currblk, data + pulled, len - pulled);
         if (!pulled_once)
         {
             next = currblk->next;
@@ -54,8 +54,6 @@ ssize_t buffer_pull(t_buffer *buf, char *data, size_t len)
             currblk = next;
         }
         pulled += pulled_once;
-        data += pulled_once;
-        len -= pulled_once;
     }
     return (pulled);
 }
