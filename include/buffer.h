@@ -17,5 +17,6 @@ int     buffer_init(t_buffer *buf);
 ssize_t buffer_put(t_buffer *buf, const char *data, size_t len);
 ssize_t buffer_pull(t_buffer *buf, char *data, size_t len);
 bool    buffer_is_empty(t_buffer *buf);
+void    buffer_destroy(t_buffer *buf);
 
 #endif

@@ -75,3 +75,18 @@ ssize_t buffer_pull(t_buffer *buf, char *data, size_t len)
     }
     return (pulled);
 }
+
+void    buffer_destroy(t_buffer *buf)
+{
+    t_buffer_block  *currblk;
+    t_buffer_block  *next;
+
+    currblk = buf->first;
+    while (currblk)
+    {
+        next = currblk->next;
+        free(currblk);
+        currblk = next;
+    }
+    *buf = (t_buffer){ NULL, NULL, 0 };
+}
