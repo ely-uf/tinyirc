@@ -1,5 +1,7 @@
 #include <sys/select.h>
 #include <sys/time.h>
+#include <errno.h>
+#include <string.h>
 #include "server.h"
 #include "logger.h"
 #include "conn.h"
@@ -47,16 +49,24 @@ int server_do_serve(t_server *server)
     while (1)
     {
         server_fdsets_setup(server);
-        timeout = (struct timeval){0, 0};
-        ret = select(server->maxfd,
+        timeout = (struct timeval){0, 100};
+        ret = select(server->maxfd + 1,
                      &server->readset,
                      &server->writeset,
                      &server->exceptset,
                      &timeout);
+        if (ret == 0)
+            continue ;
+        if (ret == -1)
+        {
+            LOG(L_WARN, "select: %s\n", strerror(errno));
+            continue ;
+        }
         /*
          *  TODO
          */
     }
+    return (ret);
 }
 
 int server_serve(t_server *server)
