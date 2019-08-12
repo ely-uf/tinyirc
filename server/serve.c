@@ -5,6 +5,7 @@
 #include "server.h"
 #include "logger.h"
 #include "conn.h"
+#include "conn_vlist.h"
 
 static int server_prepare(t_server *server)
 {
@@ -65,6 +66,8 @@ int server_do_serve(t_server *server)
         }
         if (FD_ISSET(server->sock, &server->readset))
             server_accept(server);
+        vlist_foreach(&server->clients, conn_read_cb, &server->readset);
+        vlist_foreach(&server->clients, conn_write_cb, &server->writeset);
         /*
          *  TODO
          */
