@@ -12,6 +12,7 @@ int     server_accept(t_server *serv)
     int             ret;
     t_conn          conn;
 
+    addrlen = sizeof(addr);
     newfd = accept(serv->sock, &addr, &addrlen);
     if (newfd < 0)
         return (newfd);
@@ -33,8 +34,10 @@ int     server_accept(t_server *serv)
 int     server_drop(t_server *serv, t_conn *conn)
 {
     if (serv != conn->serv)
-        LOG(L_WARN, "serv does not correspond to the server set in conn.");
+        LOG(L_WARN, "serv does not correspond to the server set in conn.\n");
 
+    LOG(L_INFO, "Dropping the connection with %s\n",
+            inet_ntoa(((struct sockaddr_in*)&conn->addr)->sin_addr));
     close(conn->fd);
     conn_destroy(conn);
     VLIST_DELETE(t_conn, &serv->clients, *conn);
