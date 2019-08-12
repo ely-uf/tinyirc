@@ -56,7 +56,7 @@ int     vlist_delete_gen(t_vlist *v, void *value_address)
         if (memcmp(mem, value_address, v->elem_size) == 0)
         {
             memmove(mem, mem + v->elem_size,
-                    v->len - idx * v->elem_size);
+                    (v->len - idx) * v->elem_size);
             v->len--;
             return (0);
         }
