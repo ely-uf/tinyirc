@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <arpa/inet.h>
 #include "logger.h"
 #include "server.h"
 #include "conn.h"
@@ -15,9 +16,12 @@ int     server_accept(t_server *serv)
     if (newfd < 0)
         return (newfd);
 
+    LOG(L_INFO, "New incoming connection from: %s\n",
+            inet_ntoa(((struct sockaddr_in*)&addr)->sin_addr));
     ret = conn_create(&conn, newfd, serv);
     if (ret)
     {
+        LOG(L_WARN, "Failed to create a new connection.\n");
         close(newfd);
         return (ret);
     }

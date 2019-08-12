@@ -35,6 +35,7 @@ void        server_fdsets_setup(t_server *server)
     FD_ZERO(&server->writeset);
     FD_ZERO(&server->exceptset);
     FD_SET(server->sock, &server->readset);
+    server->maxfd = server->sock;
     vlist_foreach(&server->clients, server_fdset_conn_set, &server->readset);
     vlist_foreach(&server->clients, server_fdset_conn_set, &server->writeset);
     vlist_foreach(&server->clients, server_fdset_conn_set, &server->exceptset);
@@ -62,6 +63,8 @@ int server_do_serve(t_server *server)
             LOG(L_WARN, "select: %s\n", strerror(errno));
             continue ;
         }
+        if (FD_ISSET(server->sock, &server->readset))
+            server_accept(server);
         /*
          *  TODO
          */

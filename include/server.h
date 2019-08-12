@@ -6,6 +6,8 @@
 # include "vlist.h"
 # include "conn.h"
 
+typedef struct  s_conn  t_conn;
+
 typedef struct  s_server
 {
     int                 sock;
@@ -18,6 +20,8 @@ typedef struct  s_server
 
 int             server_open(t_server *server);
 int             server_serve(t_server *server);
+int             server_accept(t_server *server);
+int             server_drop(t_server *serv, t_conn *conn);
 int             server_close(t_server *server);
 
 #endif
