@@ -49,6 +49,7 @@ again:
             if (errno == EINTR)
                 goto again;
             server_drop(conn->serv, conn);
+            return ;
         }
         if (sendb != pulled)
         {
