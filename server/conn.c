@@ -1,5 +1,6 @@
 #include "conn.h"
 #include "buffer.h"
+#include "logger.h"
 
 int     conn_create(t_conn *conn, int fd, t_server *serv)
 {
@@ -8,10 +9,14 @@ int     conn_create(t_conn *conn, int fd, t_server *serv)
     conn->fd = fd;
     ret = buffer_init(&conn->readbuf);
     if (ret)
+    {
         return (ret);
+        LOG(L_ERROR, "Failed to initialize read buffer for a new connection\n");
+    }
     ret = buffer_init(&conn->writebuf);
     if (ret)
     {
+        LOG(L_ERROR, "Failed to initialize wr buffer for a new connection\n");
         buffer_destroy(&conn->readbuf);
         return (ret);
     }
