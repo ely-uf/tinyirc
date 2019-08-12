@@ -17,8 +17,9 @@ int     server_accept(t_server *serv)
     if (newfd < 0)
         return (newfd);
 
-    LOG(L_INFO, "New incoming connection from: %s\n",
-            inet_ntoa(((struct sockaddr_in*)&addr)->sin_addr));
+    LOG(L_INFO, "New incoming connection from: %s:%i\n",
+            inet_ntoa(((struct sockaddr_in*)&addr)->sin_addr),
+            ntohs(((struct sockaddr_in*)&addr)->sin_port));
     ret = conn_create(&conn, newfd, serv);
     if (ret)
     {
