@@ -55,6 +55,7 @@ int         server_open(t_server *server)
 {
     int ret;
 
+    VLIST_INIT(t_conn, &server->clients);
     ret = server_socket_open(server);
     if (ret)
         return (ret);
