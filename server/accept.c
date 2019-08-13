@@ -37,8 +37,9 @@ int     server_drop(t_server *serv, t_conn *conn)
     if (serv != conn->serv)
         LOG(L_WARN, "serv does not correspond to the server set in conn.\n");
 
-    LOG(L_INFO, "Dropping the connection with %s\n",
-            inet_ntoa(((struct sockaddr_in*)&conn->addr)->sin_addr));
+    LOG(L_INFO, "Dropping the connection with %s:%i\n",
+            inet_ntoa(((struct sockaddr_in*)&conn->addr)->sin_addr),
+            ntohs(((struct sockaddr_in*)&conn->addr)->sin_port));
     close(conn->fd);
     conn_destroy(conn);
     VLIST_DELETE(t_conn, &serv->clients, *conn);
