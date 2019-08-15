@@ -4,10 +4,7 @@
 #include <unistd.h>
 #include "server.h"
 #include "logger.h"
-
-#define TINYIRC_DEFPORT 6667
-#define TINYIRC_DEFADDR INADDR_ANY
-#define TINYIRC_DEFBACKLOG  32
+#include "const.h"
 
 static int  server_socket_open(t_server *server)
 {
