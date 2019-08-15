@@ -5,6 +5,7 @@
 # include <stdbool.h>
 # include "buffer.h"
 # include "server.h"
+# include "tinymsg.h"
 
 struct s_server;
 
@@ -13,6 +14,7 @@ typedef struct  s_conn
     int             fd;
     t_buffer        readbuf;
     t_buffer        writebuf;
+    t_tinymsg       msg;
     struct sockaddr addr;
     socklen_t       addrlen;
     struct s_server *serv;

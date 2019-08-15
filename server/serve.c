@@ -6,6 +6,8 @@
 #include "logger.h"
 #include "conn.h"
 #include "conn_vlist.h"
+#include "tinymsg.h"
+#include "const.h"
 
 static int server_prepare(t_server *server)
 {
@@ -43,6 +45,28 @@ void        server_fdsets_setup(t_server *server)
     vlist_foreach(&server->clients, server_conn_fd_max, &server->maxfd);
 }
 
+
+static void conn_tinymsg_process(t_conn *conn)
+{
+    char        buf[TINYIRC_MSG_LEN + 1] = {0};
+    size_t      len;
+
+    len = tinymsg_extract(&conn->msg, buf);
+    /*
+     *  TODO
+     */
+}
+
+static void msg_handle_cb(void *c, void *unused)
+{
+    t_conn  *conn = c;
+
+    (void)unused;
+    tinymsg_pull(&conn->msg, &conn->readbuf);
+    if (tinymsg_is_complete(&conn->msg))
+        conn_tinymsg_process(conn);
+}
+
 int server_do_serve(t_server *server)
 {
     struct timeval  timeout;
@@ -67,6 +91,7 @@ int server_do_serve(t_server *server)
         if (FD_ISSET(server->sock, &server->readset))
             server_accept(server);
         vlist_foreach(&server->clients, conn_read_cb, &server->readset);
+        vlist_foreach(&server->clients, msg_handle_cb, NULL);
         vlist_foreach(&server->clients, conn_write_cb, &server->writeset);
         /*
          *  TODO
