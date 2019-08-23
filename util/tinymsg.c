@@ -21,7 +21,8 @@ void        tinymsg_pull(t_tinymsg *msg, t_buffer *readbuf)
                              sizeof(msg->buf) - msg->len);
         msg->len += pulled;
     }
-    if (strstr(msg->buf, TINYIRC_MSG_SEP) == NULL)
+    if (msg->len >= TINYIRC_MSG_LEN &&
+        strstr(msg->buf, TINYIRC_MSG_SEP) == NULL)
         tinymsg_clear(msg);
 }
 
