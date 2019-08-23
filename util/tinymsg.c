@@ -14,7 +14,7 @@ void        tinymsg_pull(t_tinymsg *msg, t_buffer *readbuf)
     if (buffer_is_empty(readbuf))
         return ;
     while (!buffer_is_empty(readbuf) &&
-            msg->len <= TINYIRC_MSG_LEN)
+            msg->len < TINYIRC_MSG_LEN)
     {
         pulled = buffer_pull(readbuf,
                              &msg->buf[msg->len],
