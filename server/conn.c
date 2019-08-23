@@ -21,6 +21,7 @@ int     conn_create(t_conn *conn, int fd, t_server *serv)
         return (ret);
     }
     conn->serv = serv;
+    conn->msg = (t_tinymsg){{0},0};
     return (0);
 }
 
