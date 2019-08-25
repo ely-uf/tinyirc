@@ -7,6 +7,7 @@
 #include "conn.h"
 #include "conn_vlist.h"
 #include "tinymsg.h"
+#include "ircmsg.h"
 #include "const.h"
 
 static int server_prepare(t_server *server)
@@ -48,13 +49,17 @@ void        server_fdsets_setup(t_server *server)
 
 static void conn_tinymsg_process(t_conn *conn)
 {
-    char        buf[TINYIRC_MSG_LEN + 1] = {0};
-    size_t      len;
+    t_ircmsg    msg = {0};
+    t_tinymsg   tmsg = {{0}, 0};
 
-    len = tinymsg_extract(&conn->msg, buf);
-    /*
-     *  TODO
-     */
+    tmsg.len = tinymsg_extract(&conn->msg, tmsg.buf);
+    if (tmsg.len == 0)
+        return ;
+    if (ircmsg_parse(&msg, &tmsg))
+        return ;
+    if (ircmsg_empty(&msg))
+        return ;
+    ircmsg_dump(&msg);
 }
 
 static void msg_handle_cb(void *c, void *unused)

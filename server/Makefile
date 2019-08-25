@@ -1,5 +1,5 @@
 NAME = server
-SRC = main.c open.c serve.c accept.c conn.c conn_io.c conn_vlist.c
+SRC = main.c open.c serve.c accept.c conn.c conn_io.c conn_vlist.c ircmsg.c
 AUX_SRC = ../util/logger.c ../util/buffer.c ../util/vlist.c \
 		  ../util/buffer_block.c ../util/tinymsg.c
 OBJ = $(SRC:.c=.o) $(AUX_SRC:.c=.o)
