@@ -64,10 +64,13 @@ static int  ircmsg_param_single_parse(t_ircmsg *msg, size_t *offset)
 
     for (i = 0;
          i + *offset < IRCMSG_LEN(msg) &&
-         IRCMSG_BUF(msg)[i + *offset] != ' ';
+         !isspace(IRCMSG_BUF(msg)[i + *offset]);
          i++)
         if (!isalpha(IRCMSG_BUF(msg)[i + *offset]))
             return (1);
+
+    if (i == 0)
+        return (1);
 
     msg->params[msg->nparams] = create_from(&IRCMSG_BUF(msg)[*offset], i);
     msg->nparams++;
