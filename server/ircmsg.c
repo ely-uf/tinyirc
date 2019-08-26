@@ -120,6 +120,9 @@ static int  ircmsg_params_parse(t_ircmsg *msg, size_t *offset)
     }
     if (IRCMSG_BUF(msg)[*offset] == ':')
         ircmsg_param_single_trailing_parse(msg, offset);
+    /*
+     *  Params are optional. Even if parse fails, we backtrack.
+     */
     return (0);
 }
 
@@ -156,8 +159,7 @@ int         ircmsg_parse(t_ircmsg *msg, t_tinymsg *from)
         LOG(L_INFO, "Invalid command.\n");
         return (ret);
     }
-    if (ircmsg_params_parse(msg, &offset))
-        LOG(L_INFO, "Invalid params.\n");
+    ircmsg_params_parse(msg, &offset);
     return ircmsg_crlf_parse(msg, &offset);
 }
 
