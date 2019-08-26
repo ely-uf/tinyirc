@@ -29,6 +29,10 @@ static int  ircmsg_command_parse_number(t_ircmsg *msg, size_t *offset)
 
 static inline bool ircmsg_char_valid(char ch)
 {
+    /*
+     *  XXX: Rename function to be more descriptive.
+     *  XXX: Verify according to IRC.
+     */
     return isalpha(ch);
 }
 
