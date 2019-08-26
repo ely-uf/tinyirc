@@ -57,7 +57,7 @@ int         server_open(t_server *server)
     if (ret)
         return (ret);
 
-    ret = server_socket_bind(server, TINYIRC_DEFADDR, TINYIRC_DEFPORT);
+    ret = server_socket_bind(server, TINYIRC_DEFADDR, server->port);
     if (ret)
     {
         server_close(server);
