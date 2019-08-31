@@ -12,6 +12,10 @@ typedef struct  s_command
     command_handler     fn;
 }               t_command;
 
-int     command_execute_from_msg(t_conn *user, t_ircmsg *msg);
+t_command const *command_lookup(const char *name);
+int             command_execute(t_command const *c,
+                                t_conn *u,
+                                int ac,
+                                char **av);
 
 #endif

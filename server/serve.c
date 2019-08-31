@@ -56,10 +56,17 @@ static void conn_tinymsg_process(t_conn *conn)
     if (tmsg.len == 0)
         return ;
     if (ircmsg_parse(&msg, &tmsg))
+    {
+        ircmsg_free(&msg);
+        server_drop(conn->serv, conn);
         return ;
-    if (ircmsg_empty(&msg))
-        return ;
-    ircmsg_dump(&msg);
+    }
+    if (!ircmsg_empty(&msg))
+    {
+        ircmsg_dump(&msg);
+        ircmsg_handle(&msg, conn);
+    }
+    ircmsg_free(&msg);
 }
 
 static void msg_handle_cb(void *c, void *unused)

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "ircmsg.h"
 #include "logger.h"
+#include "command.h"
 
 #define IRCMSG_LEN(msg) (msg)->underlying.len
 #define IRCMSG_BUF(msg) (msg)->underlying.buf
@@ -179,4 +180,27 @@ bool        ircmsg_empty(t_ircmsg *msg)
 {
     return (msg->underlying.len == __builtin_strlen(TINYIRC_MSG_SEP) &&
             strcmp(msg->underlying.buf, TINYIRC_MSG_SEP) == 0);
+}
+
+void        ircmsg_free(t_ircmsg *msg)
+{
+    free(msg->command);
+    for (short i = 0; i < msg->nparams; i++)
+        free(msg->params[i]);
+}
+
+void        ircmsg_handle(t_ircmsg *msg, t_conn *user)
+{
+    t_command const *cmd = command_lookup(msg->command);
+
+    if (!cmd)
+    {
+        /*
+         *  TODO: Respond with ERR_UNKNOWNCOMMAND
+         */
+        LOG(L_ERROR, "Invalid command: %s.\n", msg->command);
+        return ;
+    }
+
+    command_execute(cmd, user, msg->nparams, msg->params);
 }

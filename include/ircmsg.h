@@ -2,6 +2,7 @@
 # define __IRCMSG_H
 
 # include <stdbool.h>
+# include "conn.h"
 # include "const.h"
 # include "tinymsg.h"
 
@@ -16,5 +17,7 @@ typedef struct  s_ircmsg
 int     ircmsg_parse(t_ircmsg *msg, t_tinymsg *from);
 bool    ircmsg_empty(t_ircmsg *msg);
 void    ircmsg_dump(t_ircmsg *msg);
+void    ircmsg_handle(t_ircmsg *msg, t_conn *conn);
+void    ircmsg_free(t_ircmsg *msg);
 
 #endif
