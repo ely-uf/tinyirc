@@ -34,7 +34,7 @@ static int  server_configure(t_server *server, int argc, char **argv)
         LOG(L_ERROR, "Invalid port: '%s'\n", argv[0]);
         return (1);
     }
-
+    LOG(L_INFO, "Server port has been set to %i.\n", atoi(argv[0]));
     server->port = atoi(argv[0]);
     return (0);
 }
