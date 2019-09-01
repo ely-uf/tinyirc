@@ -26,6 +26,6 @@ typedef enum    e_resp_code
     ERR_RESTRICTED = 484,
 }               t_resp_code;
 
-int     response_numeric(t_conn *user, t_resp_code response);
+int     response_numeric(t_conn *user, t_resp_code resp, int ac, char **av);
 
 #endif
