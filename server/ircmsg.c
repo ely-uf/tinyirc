@@ -5,6 +5,7 @@
 #include "ircmsg.h"
 #include "logger.h"
 #include "command.h"
+#include "response.h"
 
 #define IRCMSG_LEN(msg) (msg)->underlying.len
 #define IRCMSG_BUF(msg) (msg)->underlying.buf
@@ -192,6 +193,8 @@ void        ircmsg_handle(t_ircmsg *msg, t_conn *user)
          *  TODO: Respond with ERR_UNKNOWNCOMMAND
          */
         LOG(L_ERROR, "Invalid command: %s.\n", msg->command);
+        response_numeric(user, ERR_UNKNOWNCOMMAND, 1,
+                (char*[2]){ msg->command, NULL });
         return ;
     }
 
