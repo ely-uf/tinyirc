@@ -6,7 +6,7 @@ HANDLER_SRC = err_alreadyregistred.c err_needmoreparams.c \
 			  err_nonicknamegiven.c err_erroneusnickname.c\
 			  err_nicknameinuse.c
 AUX_SRC = ../util/logger.c ../util/buffer.c ../util/vlist.c \
-		  ../util/buffer_block.c ../util/tinymsg.c
+		  ../util/buffer_block.c ../util/tinymsg.c ../util/ircnick.c
 OBJ = $(SRC:.c=.o) $(AUX_SRC:.c=.o) \
 	$(addprefix commands/,$(CMD_SRC:.c=.o)) \
 	$(addprefix responses/,$(HANDLER_SRC:.c=.o))

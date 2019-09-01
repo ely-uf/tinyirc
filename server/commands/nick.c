@@ -2,6 +2,7 @@
 #include "logger.h"
 #include "response.h"
 #include "server_conn.h"
+#include "ircnick.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -11,11 +12,6 @@ typedef struct  s_nick_query
     char        *nick;
     bool        in_use;
 }               t_nick_query;
-
-static bool nick_valid(char *nickname)
-{
-    return (bool)nickname;
-}
 
 static void nick_in_use_cb(void *c, void *a)
 {
@@ -49,7 +45,7 @@ int     command_nick(t_conn *user, int argc, char **argv)
         response_numeric(user, ERR_NONICKNAMEGIVEN, argc, argv);
         return (1);
     }
-    if (!nick_valid(argv[0]))
+    if (!ircnick_valid(argv[0]))
     {
         response_numeric(user, ERR_ERRONEUSNICKNAME, 1,
                 (char*[2]){argv[0], NULL});
