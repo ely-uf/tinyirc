@@ -8,8 +8,8 @@
 
 typedef struct  s_channel
 {
-    char            name[TINYIRC_CHANNAMELEN + 1];
-    VLIST_OF(conn)  users;
+    char                name[TINYIRC_CHANNAMELEN + 1];
+    VLIST_OF(t_conn)    users;
 }               t_channel;
 
 #endif
