@@ -1,6 +1,6 @@
 NAME = server
 SRC = main.c open.c serve.c accept.c conn.c conn_io.c conn_vlist.c \
-	  ircmsg.c command.c
+	  ircmsg.c command.c response.c
 CMD_SRC = connect.c join.c msg.c nick.c pass.c quit.c
 AUX_SRC = ../util/logger.c ../util/buffer.c ../util/vlist.c \
 		  ../util/buffer_block.c ../util/tinymsg.c
