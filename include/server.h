@@ -23,6 +23,7 @@ int             server_open(t_server *server);
 int             server_serve(t_server *server);
 int             server_accept(t_server *server);
 int             server_drop(t_server *serv, t_conn *conn);
+int             server_drop_now(t_server *serv, t_conn *conn);
 int             server_close(t_server *server);
 
 #endif

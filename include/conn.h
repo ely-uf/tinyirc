@@ -19,6 +19,7 @@ typedef struct  s_conn
     t_tinymsg       msg;
     struct sockaddr addr;
     socklen_t       addrlen;
+    bool            disconnecting;
     void            *priv;
 }               t_conn;
 

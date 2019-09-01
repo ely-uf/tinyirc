@@ -80,6 +80,15 @@ static void msg_handle_cb(void *c, void *unused)
         conn_tinymsg_process(conn);
 }
 
+static void disconnect_cb(void *c, void *unused)
+{
+    t_conn  * const conn = c;
+
+    (void)unused;
+    if (conn->disconnecting && buffer_is_empty(&conn->writebuf))
+        server_drop_now(CONN_SERVER(conn), conn);
+}
+
 int server_do_serve(t_server *server)
 {
     struct timeval  timeout;
@@ -106,6 +115,7 @@ int server_do_serve(t_server *server)
         vlist_foreach(&server->clients, conn_read_cb, &server->readset);
         vlist_foreach(&server->clients, msg_handle_cb, NULL);
         vlist_foreach(&server->clients, conn_write_cb, &server->writeset);
+        vlist_foreach(&server->clients, disconnect_cb, NULL);
         /*
          *  TODO
          */

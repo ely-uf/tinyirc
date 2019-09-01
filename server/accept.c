@@ -38,6 +38,15 @@ int     server_drop(t_server *serv, t_conn *conn)
     if (serv != CONN_SERVER(conn))
         LOG(L_WARN, "serv does not correspond to the server set in conn.\n");
 
+    conn->disconnecting = true;
+    return (0);
+}
+
+int     server_drop_now(t_server *serv, t_conn *conn)
+{
+    if (serv != CONN_SERVER(conn))
+        LOG(L_WARN, "serv does not correspond to the server set in conn.\n");
+
     LOG(L_INFO, "Dropping the connection with %s:%i\n",
             inet_ntoa(((struct sockaddr_in*)&conn->addr)->sin_addr),
             ntohs(((struct sockaddr_in*)&conn->addr)->sin_port));

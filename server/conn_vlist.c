@@ -7,7 +7,7 @@ void    conn_read_cb(void *c, void *readfdset)
     fd_set  *rd_fd_set = readfdset;
     t_conn  *conn = c;
 
-    if (FD_ISSET(conn->fd, rd_fd_set))
+    if (FD_ISSET(conn->fd, rd_fd_set) && !conn->disconnecting)
         conn_read(conn);
 }
 

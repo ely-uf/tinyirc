@@ -18,7 +18,7 @@ void    conn_read(t_conn *conn)
         if (recvb <= 0)
         {
             if (recvb == 0 || errno != EINTR)
-                server_drop(CONN_SERVER(conn), conn);
+                server_drop_now(CONN_SERVER(conn), conn);
             return ;
         }
         LOG(L_DEBUG, "Read %zu bytes.\n", (size_t)recvb);
@@ -26,7 +26,7 @@ void    conn_read(t_conn *conn)
         if (put != recvb)
         {
             LOG(L_WARN, "Possible OOM! Dropping connection.\n");
-            server_drop(CONN_SERVER(conn), conn);
+            server_drop_now(CONN_SERVER(conn), conn);
             return ;
         }
         if ((size_t)recvb < sizeof(buf))
@@ -49,7 +49,7 @@ again:
         {
             if (errno == EINTR)
                 goto again;
-            server_drop(CONN_SERVER(conn), conn);
+            server_drop_now(CONN_SERVER(conn), conn);
             return ;
         }
         if (sendb != pulled)
