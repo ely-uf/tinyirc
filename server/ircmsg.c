@@ -29,21 +29,12 @@ static int  ircmsg_command_parse_number(t_ircmsg *msg, size_t *offset)
     return (0);
 }
 
-static inline bool ircmsg_char_valid(char ch)
-{
-    /*
-     *  XXX: Rename function to be more descriptive.
-     *  XXX: Verify according to IRC.
-     */
-    return isalpha(ch);
-}
-
 static int  ircmsg_command_parse_string(t_ircmsg *msg, size_t *offset)
 {
     size_t  i;
 
     for (i = 0; i + *offset < IRCMSG_LEN(msg) && !isspace(IRCMSG_BUF(msg)[i + *offset]); i++)
-        if (!ircmsg_char_valid(IRCMSG_BUF(msg)[i + *offset]))
+        if (!isalpha(IRCMSG_BUF(msg)[i + *offset]))
             return (1);
 
     if (i == 0)
@@ -64,6 +55,11 @@ static int  ircmsg_command_parse(t_ircmsg *msg, size_t *offset)
     return (ircmsg_command_parse_string(msg, offset));
 }
 
+static bool ircmsg_nospcrlfcl(char c)
+{
+    return (c != 0 && c != '\r' && c != '\n' && c != ':');
+}
+
 static int  ircmsg_param_single_parse(t_ircmsg *msg, size_t *offset)
 {
     size_t  i;
@@ -72,7 +68,8 @@ static int  ircmsg_param_single_parse(t_ircmsg *msg, size_t *offset)
          i + *offset < IRCMSG_LEN(msg) &&
          !isspace(IRCMSG_BUF(msg)[i + *offset]);
          i++)
-        if (!isalpha(IRCMSG_BUF(msg)[i + *offset]))
+        if (!ircmsg_nospcrlfcl(IRCMSG_BUF(msg)[i + *offset]) &&
+                (i != 0 && IRCMSG_BUF(msg)[i + *offset] != ':'))
             return (1);
 
     if (i == 0)
@@ -85,11 +82,6 @@ static int  ircmsg_param_single_parse(t_ircmsg *msg, size_t *offset)
         (*offset)++;
 
     return (0);
-}
-
-static bool ircmsg_nospcrlfcl(char c)
-{
-    return (c != 0 && c != '\r' && c != '\n' && c != ':');
 }
 
 static int  ircmsg_param_single_trailing_parse(t_ircmsg *msg, size_t *offset)
@@ -229,8 +221,8 @@ ssize_t     ircmsg_serialize(t_ircmsg *msg, char *buf, size_t size)
     }
     if (offset >= size - 2)
     {
-        LOG(L_INFO, "No space left in msg with cmd '%s'.\n", msg->command);
-        return (-1);
+        LOG(L_INFO, "No space left for '%s'. Truncating.\n", msg->command);
+        offset = size - 3;
     }
     offset += snprintf(&buf[offset], size - offset, "\r\n");
     return (offset);

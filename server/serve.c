@@ -56,6 +56,8 @@ static void conn_tinymsg_process(t_conn *conn)
     tmsg.len = tinymsg_extract(&conn->msg, tmsg.buf);
     if (tmsg.len == 0)
         return ;
+    if (tmsg.len == 2 && strcmp(tmsg.buf, "\r\n") == 0)
+        return ;
     if (ircmsg_parse(&msg, &tmsg))
     {
         ircmsg_free(&msg);
