@@ -5,6 +5,7 @@
 # include <sys/select.h>
 # include "vlist.h"
 # include "conn.h"
+# include "channel.h"
 
 typedef struct  s_conn  t_conn;
 
@@ -13,6 +14,7 @@ typedef struct  s_server
     int                 sock;
     short               port;
     VLIST_OF(t_conn)    clients;
+    VLIST_OF(t_channel) channels;
     int                 maxfd;
     fd_set              readset;
     fd_set              writeset;
