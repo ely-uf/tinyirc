@@ -6,5 +6,8 @@
 
 void    conn_read_cb(void *conn, void *readfdset);
 void    conn_write_cb(void *conn, void *writefdset);
+void    conn_msg_handle_cb(void *conn, void *unused);
+void    conn_disconnect_cb(void *conn, void *unused);
+void    conn_disconnect_now_cb(void *conn, void *unused);
 
 #endif

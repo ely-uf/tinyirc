@@ -47,58 +47,6 @@ void        server_fdsets_setup(t_server *server)
     vlist_foreach(&server->clients, server_conn_fd_max, &server->maxfd);
 }
 
-
-static void conn_tinymsg_process(t_conn *conn)
-{
-    t_ircmsg    msg = {0, 0, {0}, 0, {{0}, 0}};
-    t_tinymsg   tmsg = {{0}, 0};
-
-    tmsg.len = tinymsg_extract(&conn->msg, tmsg.buf);
-    if (tmsg.len == 0)
-        return ;
-    if (tmsg.len == 2 && strcmp(tmsg.buf, "\r\n") == 0)
-        return ;
-    if (ircmsg_parse(&msg, &tmsg))
-    {
-        ircmsg_free(&msg);
-        server_drop(CONN_SERVER(conn), conn);
-        return ;
-    }
-    if (!ircmsg_empty(&msg))
-    {
-        ircmsg_dump(&msg);
-        ircmsg_handle(&msg, conn);
-    }
-    ircmsg_free(&msg);
-}
-
-static void msg_handle_cb(void *c, void *unused)
-{
-    t_conn  *conn = c;
-
-    (void)unused;
-    tinymsg_pull(&conn->msg, &conn->readbuf);
-    if (tinymsg_is_complete(&conn->msg))
-        conn_tinymsg_process(conn);
-}
-
-static void disconnect_cb(void *c, void *unused)
-{
-    t_conn  * const conn = c;
-
-    (void)unused;
-    if (conn->disconnecting && buffer_is_empty(&conn->writebuf))
-        server_drop_now(CONN_SERVER(conn), conn);
-}
-
-static void disconnect_now_cb(void *c, void *unused)
-{
-    t_conn  * const conn = c;
-
-    (void)unused;
-    server_drop_now(CONN_SERVER(conn), conn);
-}
-
 int server_do_serve(t_server *server)
 {
     struct timeval  timeout;
@@ -123,11 +71,11 @@ int server_do_serve(t_server *server)
         if (FD_ISSET(server->sock, &server->readset))
             server_accept(server);
         vlist_foreach(&server->clients, conn_read_cb, &server->readset);
-        vlist_foreach(&server->clients, msg_handle_cb, NULL);
+        vlist_foreach(&server->clients, conn_msg_handle_cb, NULL);
         vlist_foreach(&server->clients, conn_write_cb, &server->writeset);
-        vlist_foreach(&server->clients, disconnect_cb, NULL);
+        vlist_foreach(&server->clients, conn_disconnect_cb, NULL);
     }
-    vlist_foreach(&server->clients, disconnect_now_cb, NULL);
+    vlist_foreach(&server->clients, conn_disconnect_now_cb, NULL);
     return (ret);
 }
 

@@ -2,6 +2,7 @@
 #include "server_conn.h"
 #include "buffer.h"
 #include "logger.h"
+#include "ircmsg.h"
 #include <string.h>
 
 int     conn_priv_init(t_conn *conn, t_server *serv)
@@ -59,4 +60,28 @@ void    conn_destroy(t_conn *conn)
     conn->fd = -1;
     free(CONN_PRIV(conn));
     CONN_PRIV(conn) = NULL;
+}
+
+void        conn_msg_process(t_conn *conn)
+{
+    t_ircmsg    msg = {0, 0, {0}, 0, {{0}, 0}};
+    t_tinymsg   tmsg = {{0}, 0};
+
+    tmsg.len = tinymsg_extract(&conn->msg, tmsg.buf);
+    if (tmsg.len == 0)
+        return ;
+    if (tmsg.len == 2 && strcmp(tmsg.buf, "\r\n") == 0)
+        return ;
+    if (ircmsg_parse(&msg, &tmsg))
+    {
+        ircmsg_free(&msg);
+        server_drop(CONN_SERVER(conn), conn);
+        return ;
+    }
+    if (!ircmsg_empty(&msg))
+    {
+        ircmsg_dump(&msg);
+        ircmsg_handle(&msg, conn);
+    }
+    ircmsg_free(&msg);
 }

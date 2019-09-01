@@ -28,5 +28,6 @@ void            conn_addr_set(t_conn *conn, struct sockaddr *a, socklen_t l);
 void            conn_read(t_conn *conn);
 void            conn_write(t_conn *conn);
 void            conn_destroy(t_conn *conn);
+void            conn_msg_process(t_conn *conn);
 
 #endif
