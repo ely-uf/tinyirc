@@ -6,7 +6,7 @@
 typedef int     (*t_response_fn)(t_conn *conn, int argc, char **argv);
 typedef struct  s_response_handler
 {
-    const char      *name;
+    unsigned short  code;
     t_response_fn   handler;
 }               t_response_handler;
 

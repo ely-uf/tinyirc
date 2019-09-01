@@ -6,23 +6,39 @@
 #include "server_conn.h"
 
 t_response_handler  g_resp_handlers[] = {
-    {NULL, NULL}
+    {0, NULL}
 };
+
+static t_response_fn    response_handler_find(t_resp_code code)
+{
+    size_t  i;
+
+    i = 0;
+    while (true)
+    {
+        if (g_resp_handlers[i].code == 0)
+            return (NULL);
+        if (g_resp_handlers[i].code == code)
+            return (g_resp_handlers[i].handler);
+        i++;
+    }
+}
 
 static int  response_numeric_do(t_conn *user,
                                 t_resp_code response,
                                 int argc,
                                 char **argv)
 {
-    char cmdbuf[512];
-    t_ircmsg const  respmsg = {
-        .command = cmdbuf,
-    };
+    t_response_fn   handler;
 
-    (void)argc;
-    (void)argv;
-    snprintf(cmdbuf, sizeof(cmdbuf), "%03hu", (unsigned short)response);
-    return (ircmsg_send((t_ircmsg*)&respmsg, user));
+    handler = response_handler_find(response);
+    if (!handler)
+    {
+        LOG(L_WARN, "Tried to respond with unknown code: %u\n", response);
+        return (1);
+    }
+
+    return handler(user, argc, argv);
 }
 
 int     response_numeric(t_conn *user, t_resp_code response, int ac, char **av)
