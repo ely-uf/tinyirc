@@ -45,6 +45,9 @@ ssize_t     tinymsg_extract(t_tinymsg *msg, char dst[TINYIRC_MSG_LEN])
         return (0);
     strlcpy(dst, msg->buf, msglen + 1);
     msg->len -= msglen;
-    memmove(msg->buf, msg->buf + msglen, TINYIRC_MSG_LEN - msglen);
+    if (msglen == TINYIRC_MSG_LEN)
+        memset(msg->buf, 0, TINYIRC_MSG_LEN);
+    else
+        memmove(msg->buf, msg->buf + msglen, TINYIRC_MSG_LEN - msglen);
     return msglen;
 }
