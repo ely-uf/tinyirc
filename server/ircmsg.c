@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "ircmsg.h"
 #include "logger.h"
 #include "command.h"
@@ -203,4 +204,46 @@ void        ircmsg_handle(t_ircmsg *msg, t_conn *user)
     }
 
     command_execute(cmd, user, msg->nparams, msg->params);
+}
+
+ssize_t     ircmsg_serialize(t_ircmsg *msg, char *buf, size_t size)
+{
+    size_t  offset;
+    short   cmd;
+
+    if (msg->prefix)
+        offset = snprintf(buf, size, ":%s %s", msg->prefix, msg->command);
+    else
+        offset = snprintf(buf, size, "%s", msg->command);
+    cmd = 0;
+    while (cmd < msg->nparams)
+    {
+        if (offset >= size)
+        {
+            LOG(L_INFO, "Message with '%s' is too big!\n", msg->command);
+            return (-1);
+        }
+        offset += snprintf(&buf[offset], size - offset, cmd == msg->nparams - 1
+                ? " :%s" : " %s", msg->params[cmd]);
+        cmd++;
+    }
+    if (offset >= size - 2)
+    {
+        LOG(L_INFO, "No space left in msg with cmd '%s'.\n", msg->command);
+        return (-1);
+    }
+    offset += snprintf(&buf[offset], size - offset, "\r\n");
+    return (offset);
+}
+
+ssize_t     ircmsg_send(t_ircmsg *msg, t_conn *user)
+{
+    char    buf[TINYIRC_MSG_LEN];
+    ssize_t size;
+
+    size = ircmsg_serialize(msg, buf, sizeof(buf));
+    if (size <= 0)
+        return (size);
+    LOG(L_INFO, "Serialized message: %s", buf);
+    return (buffer_put(&user->writebuf, buf, size));
 }

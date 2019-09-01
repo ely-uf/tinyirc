@@ -49,7 +49,7 @@ void        server_fdsets_setup(t_server *server)
 
 static void conn_tinymsg_process(t_conn *conn)
 {
-    t_ircmsg    msg = {0, {0}, 0, {{0}, 0}};
+    t_ircmsg    msg = {0, 0, {0}, 0, {{0}, 0}};
     t_tinymsg   tmsg = {{0}, 0};
 
     tmsg.len = tinymsg_extract(&conn->msg, tmsg.buf);
