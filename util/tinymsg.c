@@ -1,5 +1,6 @@
 #include <string.h>
 #include "tinymsg.h"
+#include "logger.h"
 
 void        tinymsg_clear(t_tinymsg *msg)
 {
@@ -23,7 +24,10 @@ void        tinymsg_pull(t_tinymsg *msg, t_buffer *readbuf)
     }
     if (msg->len >= TINYIRC_MSG_LEN &&
         strstr(msg->buf, TINYIRC_MSG_SEP) == NULL)
+    {
+        LOG(L_INFO, "Message of length %zu is too long.\n", msg->len);
         tinymsg_clear(msg);
+    }
 }
 
 bool        tinymsg_is_complete(t_tinymsg *msg)
