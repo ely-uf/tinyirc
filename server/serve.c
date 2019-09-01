@@ -91,12 +91,20 @@ static void disconnect_cb(void *c, void *unused)
         server_drop_now(CONN_SERVER(conn), conn);
 }
 
+static void disconnect_now_cb(void *c, void *unused)
+{
+    t_conn  * const conn = c;
+
+    (void)unused;
+    server_drop_now(CONN_SERVER(conn), conn);
+}
+
 int server_do_serve(t_server *server)
 {
     struct timeval  timeout;
     int             ret;
 
-    while (1)
+    while (server->alive)
     {
         server_fdsets_setup(server);
         timeout = (struct timeval){0, 100};
@@ -118,10 +126,8 @@ int server_do_serve(t_server *server)
         vlist_foreach(&server->clients, msg_handle_cb, NULL);
         vlist_foreach(&server->clients, conn_write_cb, &server->writeset);
         vlist_foreach(&server->clients, disconnect_cb, NULL);
-        /*
-         *  TODO
-         */
     }
+    vlist_foreach(&server->clients, disconnect_now_cb, NULL);
     return (ret);
 }
 

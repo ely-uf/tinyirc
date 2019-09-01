@@ -11,6 +11,7 @@ typedef struct  s_conn  t_conn;
 
 typedef struct  s_server
 {
+    bool                alive;
     int                 sock;
     short               port;
     VLIST_OF(t_conn)    clients;

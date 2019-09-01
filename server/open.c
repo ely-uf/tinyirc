@@ -45,6 +45,8 @@ static int  server_socket_listen(t_server *server, int backlog)
 
 int         server_close(t_server *server)
 {
+    vlist_destroy(&server->clients);
+    vlist_destroy(&server->channels);
     return (close(server->sock));
 }
 
@@ -53,6 +55,7 @@ int         server_open(t_server *server)
     int ret;
 
     VLIST_INIT(t_conn, &server->clients);
+    VLIST_INIT(t_channel, &server->channels);
     ret = server_socket_open(server);
     if (ret)
         return (ret);
@@ -67,5 +70,7 @@ int         server_open(t_server *server)
     ret = server_socket_listen(server, TINYIRC_DEFBACKLOG);
     if (ret)
         server_close(server);
+    else
+        server->alive = true;
     return (ret);
 }
