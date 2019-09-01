@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "server.h"
 #include "conn.h"
+#include "server_conn.h"
 
 int     server_accept(t_server *serv)
 {
@@ -34,7 +35,7 @@ int     server_accept(t_server *serv)
 
 int     server_drop(t_server *serv, t_conn *conn)
 {
-    if (serv != conn->serv)
+    if (serv != CONN_SERVER(conn))
         LOG(L_WARN, "serv does not correspond to the server set in conn.\n");
 
     LOG(L_INFO, "Dropping the connection with %s:%i\n",

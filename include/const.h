@@ -6,5 +6,6 @@
 # define TINYIRC_DEFBACKLOG  32
 # define TINYIRC_MSG_LEN 512
 # define TINYIRC_MSG_SEP "\r\n"
+# define TINYIRC_NICKLEN 9
 
 #endif

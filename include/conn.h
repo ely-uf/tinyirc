@@ -7,6 +7,8 @@
 # include "server.h"
 # include "tinymsg.h"
 
+# define CONN_PRIV(conn) ((conn)->priv)
+
 struct s_server;
 
 typedef struct  s_conn
@@ -17,7 +19,7 @@ typedef struct  s_conn
     t_tinymsg       msg;
     struct sockaddr addr;
     socklen_t       addrlen;
-    struct s_server *serv;
+    void            *priv;
 }               t_conn;
 
 int             conn_create(t_conn *conn, int fd, struct s_server *serv);

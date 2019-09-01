@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "conn.h"
 #include "conn_vlist.h"
+#include "server_conn.h"
 #include "tinymsg.h"
 #include "ircmsg.h"
 #include "const.h"
@@ -58,7 +59,7 @@ static void conn_tinymsg_process(t_conn *conn)
     if (ircmsg_parse(&msg, &tmsg))
     {
         ircmsg_free(&msg);
-        server_drop(conn->serv, conn);
+        server_drop(CONN_SERVER(conn), conn);
         return ;
     }
     if (!ircmsg_empty(&msg))
