@@ -1,7 +1,7 @@
 NAME = server
 SRC = main.c open.c serve.c accept.c conn.c conn_io.c conn_vlist.c \
 	  ircmsg.c command.c response.c
-CMD_SRC = connect.c join.c msg.c nick.c pass.c quit.c
+CMD_SRC = join.c msg.c nick.c pass.c quit.c
 HANDLER_SRC = err_alreadyregistred.c err_needmoreparams.c \
 			  err_nonicknamegiven.c err_erroneusnickname.c\
 			  err_nicknameinuse.c

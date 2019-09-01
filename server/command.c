@@ -21,10 +21,6 @@ static t_command const  g_command_list[] = {
         command_msg,
     },
     {
-        "CONNECT",
-        command_connect,
-    },
-    {
         "QUIT",
         command_quit,
     },
