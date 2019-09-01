@@ -43,9 +43,6 @@ static bool nick_in_use(t_conn *conn, char *nickname)
 
 int     command_nick(t_conn *user, int argc, char **argv)
 {
-    (void)user;
-    (void)argc;
-    (void)argv;
     LOG(L_INFO, "Command NICK\n");
     if (argc != 1)
     {
@@ -54,15 +51,13 @@ int     command_nick(t_conn *user, int argc, char **argv)
     }
     if (!nick_valid(argv[0]))
     {
-        response_numeric(user, ERR_ERRONEUSNICKNAME, argc, argv);
+        response_numeric(user, ERR_ERRONEUSNICKNAME, 1,
+                (char*[2]){argv[0], NULL});
         return (1);
     }
     if (nick_in_use(user, argv[0]))
     {
-        /*
-         *  TODO: Should pass nickname to the response.
-         */
-        response_numeric(user, ERR_NICKNAMEINUSE, argc, argv);
+        response_numeric(user, ERR_NICKNAMEINUSE, 1, (char*[2]){argv[0], NULL});
         return (1);
     }
     snprintf(CONN_UDATA(user)->name, sizeof(CONN_UDATA(user)->name),

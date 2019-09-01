@@ -6,6 +6,11 @@
 #include "server_conn.h"
 
 t_response_handler  g_resp_handlers[] = {
+    {ERR_ALREADYREGISTRED, err_alreadyregistred},
+    {ERR_NEEDMOREPARAMS, err_needmoreparams},
+    {ERR_NONICKNAMEGIVEN, err_nonicknamegiven},
+    {ERR_ERRONEUSNICKNAME, err_erroneusnickname},
+    {ERR_NICKNAMEINUSE, err_nicknameinuse},
     {0, NULL}
 };
 

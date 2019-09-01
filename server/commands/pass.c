@@ -14,7 +14,8 @@ int     command_pass(t_conn *user, int argc, char **argv)
     }
     if (argc != 1)
     {
-        response_numeric(user, ERR_NEEDMOREPARAMS, argc, argv);
+        response_numeric(user, ERR_NEEDMOREPARAMS, 1,
+                (char*[2]){ "PASS", NULL });
         return (1);
     }
     snprintf(CONN_UDATA(user)->pass, sizeof(CONN_UDATA(user)->pass),
