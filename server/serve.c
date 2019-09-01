@@ -115,10 +115,10 @@ int server_do_serve(t_server *server)
                      &timeout);
         if (ret == 0)
             continue ;
-        if (ret == -1)
+        if (ret == -1 && errno != EINTR && errno != EAGAIN)
         {
-            LOG(L_WARN, "select: %s\n", strerror(errno));
-            continue ;
+            LOG(L_ERROR, "select: %s\n", strerror(errno));
+            break ;
         }
         if (FD_ISSET(server->sock, &server->readset))
             server_accept(server);
