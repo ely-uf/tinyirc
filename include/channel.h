@@ -12,4 +12,10 @@ typedef struct  s_channel
     VLIST_OF(t_conn)    users;
 }               t_channel;
 
+int             channel_init(t_channel *chan, char *name);
+int             channel_join(t_channel *chan, t_conn *user);
+int             channel_leave(t_channel *chan, t_conn *user);
+int             channel_send(t_channel *chan, t_conn *sender, char *message);
+int             channel_destroy(t_channel *chan);
+
 #endif

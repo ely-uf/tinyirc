@@ -1,10 +1,10 @@
 #ifndef __CONNECTION_H
 # define __CONNECTION_H
 
+# include <netinet/ip.h>
 # include <stdlib.h>
 # include <stdbool.h>
 # include "buffer.h"
-# include "server.h"
 # include "tinymsg.h"
 
 # define CONN_PRIV(conn) ((conn)->priv)
