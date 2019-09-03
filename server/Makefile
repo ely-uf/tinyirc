@@ -4,7 +4,8 @@ SRC = main.c open.c serve.c accept.c conn.c conn_io.c conn_vlist.c \
 CMD_SRC = join.c msg.c nick.c pass.c quit.c
 HANDLER_SRC = err_alreadyregistred.c err_needmoreparams.c \
 			  err_nonicknamegiven.c err_erroneusnickname.c\
-			  err_nicknameinuse.c err_unknowncommand.c
+			  err_nicknameinuse.c err_unknowncommand.c \
+			  err_notregistered.c
 AUX_SRC = ../util/logger.c ../util/buffer.c ../util/vlist.c \
 		  ../util/buffer_block.c ../util/tinymsg.c ../util/ircnick.c
 OBJ = $(SRC:.c=.o) $(AUX_SRC:.c=.o) \

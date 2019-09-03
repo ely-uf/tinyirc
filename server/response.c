@@ -12,6 +12,7 @@ t_response_handler  g_resp_handlers[] = {
     {ERR_ERRONEUSNICKNAME, err_erroneusnickname},
     {ERR_NICKNAMEINUSE, err_nicknameinuse},
     {ERR_UNKNOWNCOMMAND, err_unknowncommand},
+    {ERR_NOTREGISTERED, err_notregistered},
     {0, NULL}
 };
 

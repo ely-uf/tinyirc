@@ -18,5 +18,6 @@ int err_nonicknamegiven(t_conn *conn, int argc, char **argv);
 int err_erroneusnickname(t_conn *conn, int argc, char **argv);
 int err_nicknameinuse(t_conn *conn, int argc, char **argv);
 int err_unknowncommand(t_conn *conn, int argc, char **argv);
+int err_notregistered(t_conn *conn, int argc, char **argv);
 
 #endif

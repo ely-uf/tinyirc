@@ -1,6 +1,8 @@
 #include "command.h"
 #include "command_list.h"
 #include "logger.h"
+#include "response.h"
+#include "server_conn.h"
 #include <string.h>
 
 static t_command const  g_command_list[] = {
@@ -45,6 +47,12 @@ int             command_execute(t_command const *cmd,
     if (cmd == NULL)
     {
         LOG(L_ERROR, "Trying to execute NULL command.\n");
+        return (-1);
+    }
+    if (strcmp(cmd->cmdname, "PASS") && strcmp(cmd->cmdname, "NICK") &&
+        !CONN_UDATA(user)->name[0])
+    {
+        response_numeric(user, ERR_NOTREGISTERED, 0, 0);
         return (-1);
     }
     return (cmd->fn(user, argc, argv));
