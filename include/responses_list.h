@@ -19,5 +19,8 @@ int err_erroneusnickname(t_conn *conn, int argc, char **argv);
 int err_nicknameinuse(t_conn *conn, int argc, char **argv);
 int err_unknowncommand(t_conn *conn, int argc, char **argv);
 int err_notregistered(t_conn *conn, int argc, char **argv);
+int err_notexttosend(t_conn *conn, int argc, char **argv);
+int err_norecipient(t_conn *conn, int argc, char **argv);
+int err_nosuchnick(t_conn *conn, int argc, char **argv);
 
 #endif

@@ -18,4 +18,6 @@ typedef struct  s_server_conn
     t_udata     udata;
 }               t_server_conn;
 
+t_conn          *server_conn_find_by_name(t_server *srv, char *nick);
+
 #endif

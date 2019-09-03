@@ -29,3 +29,11 @@ bool    ircnick_valid(char *nick)
 
     return (true);
 }
+
+/*
+ *  TODO: RFC-compliant comparison.
+ */
+int     ircnick_cmp(char *n1, char *n2)
+{
+    return strcmp(n1, n2);
+}
