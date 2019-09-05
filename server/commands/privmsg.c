@@ -4,7 +4,7 @@
 #include "server_conn.h"
 #include "response.h"
 
-int     command_msg(t_conn *user, int argc, char **argv)
+int     command_privmsg(t_conn *user, int argc, char **argv)
 {
     t_ircmsg    message = {
         .prefix = CONN_UDATA(user)->name,

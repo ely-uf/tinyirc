@@ -21,8 +21,8 @@ static t_command const  g_command_list[] = {
         command_join,
     },
     {
-        "MSG",
-        command_msg,
+        "PRIVMSG",
+        command_privmsg,
     },
     {
         "QUIT",
