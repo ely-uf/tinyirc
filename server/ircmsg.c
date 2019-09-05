@@ -70,7 +70,7 @@ static int  ircmsg_param_single_parse(t_ircmsg *msg, size_t *offset)
          !isspace(IRCMSG_BUF(msg)[i + *offset]);
          i++)
         if (!ircmsg_nospcrlfcl(IRCMSG_BUF(msg)[i + *offset]) &&
-                (i != 0 && IRCMSG_BUF(msg)[i + *offset] != ':'))
+                (i == 0 && IRCMSG_BUF(msg)[i + *offset] == ':'))
             return (1);
 
     if (i == 0)
