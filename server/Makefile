@@ -9,7 +9,8 @@ HANDLER_SRC = err_alreadyregistred.c err_needmoreparams.c \
 			  err_notregistered.c err_notexttosend.c \
 			  err_norecipient.c err_nosuchnick.c
 AUX_SRC = ../util/logger.c ../util/buffer.c ../util/vlist.c \
-		  ../util/buffer_block.c ../util/tinymsg.c ../util/ircnick.c
+		  ../util/buffer_block.c ../util/tinymsg.c ../util/ircnick.c \
+		  ../util/irccasecmp.c
 OBJ = $(SRC:.c=.o) $(AUX_SRC:.c=.o) \
 	$(addprefix commands/,$(CMD_SRC:.c=.o)) \
 	$(addprefix responses/,$(HANDLER_SRC:.c=.o))
