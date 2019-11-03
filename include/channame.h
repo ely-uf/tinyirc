@@ -3,6 +3,7 @@
 
 # include <stdbool.h>
 
+int     channame_cmp(char *n1, char *n2);
 bool    channame_valid(char *name);
 
 #endif

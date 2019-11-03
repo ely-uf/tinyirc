@@ -12,7 +12,7 @@ int     conn_priv_init(t_conn *conn, t_server *serv)
         return (1);
     CONN_SERVER(conn) = serv;
     memset(CONN_UDATA(conn), 0, sizeof(*CONN_UDATA(conn)));
-    return (0);
+    return VLIST_INIT(t_channel, &CONN_UDATA(conn)->channels);
 }
 
 int     conn_create(t_conn *conn, int fd, t_server *serv)
@@ -70,6 +70,7 @@ void        conn_msg_process(t_conn *conn)
     tmsg.len = tinymsg_extract(&conn->msg, tmsg.buf);
     if (tmsg.len == 0)
         return ;
+    /* Hack */
     if (tmsg.len == 2 && strcmp(tmsg.buf, "\r\n") == 0)
         return ;
     if (ircmsg_parse(&msg, &tmsg))

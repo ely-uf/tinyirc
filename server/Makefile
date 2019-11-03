@@ -1,6 +1,6 @@
 NAME = server
 SRC = main.c open.c serve.c accept.c conn.c conn_vlist.c \
-	  conn_io.c conn_io_vlist.c \
+	  conn_io.c conn_io_vlist.c channel.c \
 	  ircmsg.c command.c response.c server_conn.c
 CMD_SRC = join.c privmsg.c nick.c pass.c quit.c
 HANDLER_SRC = err_alreadyregistred.c err_needmoreparams.c \
