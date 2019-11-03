@@ -23,6 +23,12 @@ static int  ircmsg_command_parse_number(t_ircmsg *msg, size_t *offset)
     for (size_t i = 0; i < 3 && i + *offset < IRCMSG_LEN(msg); i++)
         if (!isdigit(IRCMSG_BUF(msg)[i + *offset]))
             return (1);
+    if (IRCMSG_LEN(msg) > 3 + *offset + __builtin_strlen(TINYIRC_MSG_SEP) &&
+        IRCMSG_BUF(msg)[*offset + 3] != ' ')
+    {
+        LOG(L_ERROR, "IRCMSG_LEN(msg) [%i] | IRCMSG_BUF(msg)[*offset + 3] [%i]\n", IRCMSG_LEN(msg), IRCMSG_BUF(msg)[*offset + 3]);
+        return (1);
+    }
     msg->command = create_from(&IRCMSG_BUF(msg)[*offset], 3);
     *offset += 3;
     if (*offset <= IRCMSG_LEN(msg) && IRCMSG_BUF(msg)[*offset] == ' ')
@@ -189,9 +195,6 @@ void        ircmsg_handle(t_ircmsg *msg, t_conn *user)
 
     if (!cmd)
     {
-        /*
-         *  TODO: Respond with ERR_UNKNOWNCOMMAND
-         */
         LOG(L_ERROR, "Invalid command: %s.\n", msg->command);
         response_numeric(user, ERR_UNKNOWNCOMMAND, 1,
                 (char*[2]){ msg->command, NULL });
