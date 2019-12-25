@@ -10,5 +10,6 @@ int     command_join(t_conn *user, int argc, char **argv);
 int     command_privmsg(t_conn *user, int argc, char **argv);
 int     command_connect(t_conn *user, int argc, char **argv);
 int     command_quit(t_conn *user, int argc, char **argv);
+int     command_help(t_conn *user, int argc, char **argv);
 
 #endif

@@ -9,31 +9,65 @@
 
 static t_command const  g_command_list[] = {
     {
-        "PASS",
-        command_pass,
+        .cmdname = "PASS",
+        .syntax = "PASS <password>",
+        .description =
+            "The PASS command is used to set a 'connection password'. The\n"
+            "optional password can and MUST be set before any attempt to register\n"
+            "the connection is made.  Currently this requires that user send a\n"
+            "PASS command before sending the NICK/USER combination.",
+        .fn = command_pass,
     },
     {
-        "NICK",
-        command_nick,
+        .cmdname = "NICK",
+        .syntax = "NICK <nickname>",
+        .description =
+            "NICK command is used to give user a nickname or change the existing\n"
+            "one.",
+        .fn = command_nick,
     },
     {
-        "JOIN",
-        command_join,
+        .cmdname = "JOIN",
+        .syntax = "JOIN ( <channel> *( \",\" <channel> ) "
+                  "[ <key> *( \",\" <key> ) ] ) / \"0\"",
+        .description =
+            "The JOIN command is used by a user to request to start listening to\n"
+            "the specific channel.  Servers MUST be able to parse arguments in the\n"
+            "form of a list of target, but SHOULD NOT use lists when sending JOIN\n"
+            "messages to clients.",
+        .fn = command_join,
     },
     {
-        "PRIVMSG",
-        command_privmsg,
+        .cmdname = "PRIVMSG",
+        .syntax = "PRIVMSG <msgtarget> <text to be sent>",
+        .description =
+            "PRIVMSG is used to send private messages between users, as well as to\n"
+            "send messages to channels.  <msgtarget> is usually the nickname of\n"
+            "the recipient of the message, or a channel name.",
+        .fn = command_privmsg,
     },
     {
-        "QUIT",
-        command_quit,
+        .cmdname = "QUIT",
+        .syntax = "QUIT [ <Quit Message> ]",
+        .description =
+            "A client session is terminated with a quit message.  The server\n"
+            "acknowledges this by sending an ERROR message to the client.",
+        .fn = command_quit,
+    },
+    {
+        .cmdname = "HELP",
+        .syntax = "HELP",
+        .description =
+            "HELP is used to get the description of available commands.",
+        .fn = command_help,
     },
 };
 
-static char const *     g_command_list_no_reg[] = {
+static char const       *g_command_list_no_reg[] = {
     "PASS",
     "NICK",
-    "QUIT"
+    "QUIT",
+    "HELP",
 };
 
 static bool     command_requires_registration(t_command const * cmd)
@@ -55,6 +89,12 @@ t_command const *command_lookup(char const *name)
     }
 
     return (NULL);
+}
+
+t_command const *command_list(size_t *amount)
+{
+    *amount = ARRAY_LEN(g_command_list);
+    return g_command_list;
 }
 
 int             command_execute(t_command const *cmd,
