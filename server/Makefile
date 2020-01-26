@@ -36,3 +36,8 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+run: $(NAME)
+	./$(NAME)
+
+.PHONY = all clean fclean re run
