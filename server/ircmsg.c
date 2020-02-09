@@ -195,7 +195,7 @@ void        ircmsg_handle(t_ircmsg *msg, t_conn *user)
 
     if (!cmd)
     {
-        LOG(L_ERROR, "Invalid command: %s.\n", msg->command);
+        LOG(L_INFO, "Invalid command: %s.\n", msg->command);
         response_numeric(user, ERR_UNKNOWNCOMMAND, 1,
                 (char*[2]){ msg->command, NULL });
         return ;

@@ -70,12 +70,12 @@ int server_do_serve(t_server *server)
         }
         if (FD_ISSET(server->sock, &server->readset))
             server_accept(server);
-        vlist_foreach(&server->clients, conn_read_cb, &server->readset);
-        vlist_foreach(&server->clients, conn_msg_handle_cb, NULL);
-        vlist_foreach(&server->clients, conn_write_cb, &server->writeset);
-        vlist_foreach(&server->clients, conn_disconnect_cb, NULL);
+        vlist_foreach(&server->clients, server_conn_cb_recv, &server->readset);
+        vlist_foreach(&server->clients, server_conn_cb_msg_handle, NULL);
+        vlist_foreach(&server->clients, server_conn_cb_send, &server->writeset);
+        vlist_foreach(&server->clients, server_conn_cb_disconnect, NULL);
     }
-    vlist_foreach(&server->clients, conn_disconnect_now_cb, NULL);
+    vlist_foreach(&server->clients, server_conn_cb_disconnect_now, NULL);
     return (ret);
 }
 

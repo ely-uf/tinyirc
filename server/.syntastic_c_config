@@ -1,0 +1,5 @@
+-std=gnu11
+-Wall
+-Wextra
+-I ../include
+-I ../include/server

@@ -21,7 +21,7 @@ int     server_accept(t_server *serv)
     LOG(L_INFO, "New incoming connection from: %s:%i\n",
             inet_ntoa(((struct sockaddr_in*)&addr)->sin_addr),
             ntohs(((struct sockaddr_in*)&addr)->sin_port));
-    ret = conn_create(&conn, newfd, serv);
+    ret = server_conn_create(&conn, newfd, serv);
     if (ret)
     {
         LOG(L_WARN, "Failed to create a new connection.\n");

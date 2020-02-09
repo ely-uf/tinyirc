@@ -4,21 +4,13 @@
 #include "logger.h"
 #include "ircmsg.h"
 #include <string.h>
+#include <assert.h>
 
-int     conn_priv_init(t_conn *conn, t_server *serv)
-{
-    CONN_PRIV(conn) = (t_server_conn*)malloc(sizeof(t_server_conn));
-    if (!CONN_PRIV(conn))
-        return (1);
-    CONN_SERVER(conn) = serv;
-    memset(CONN_UDATA(conn), 0, sizeof(*CONN_UDATA(conn)));
-    return (0);
-}
-
-int     conn_create(t_conn *conn, int fd, t_server *serv)
+int     conn_create(t_conn *conn, int fd, const t_conn_ops *ops, void *priv)
 {
     int ret;
 
+    assert(ops && ops->init && ops->destroy && ops->on_error && ops->on_message);
     conn->fd = fd;
     ret = buffer_init(&conn->readbuf);
     if (ret)
@@ -33,7 +25,7 @@ int     conn_create(t_conn *conn, int fd, t_server *serv)
         buffer_destroy(&conn->readbuf);
         return (ret);
     }
-    ret = conn_priv_init(conn, serv);
+    ret = ops->init(conn, priv);
     if (ret)
     {
         buffer_destroy(&conn->readbuf);
@@ -41,6 +33,7 @@ int     conn_create(t_conn *conn, int fd, t_server *serv)
         return (ret);
     }
     conn->msg = (t_tinymsg){{0},0};
+    conn->ops = ops;
     return (0);
 }
 
@@ -58,11 +51,11 @@ void    conn_destroy(t_conn *conn)
     buffer_destroy(&conn->readbuf);
     buffer_destroy(&conn->writebuf);
     conn->fd = -1;
-    free(CONN_PRIV(conn));
+    conn->ops->destroy(conn);
     CONN_PRIV(conn) = NULL;
 }
 
-void        conn_msg_process(t_conn *conn)
+void    conn_msg_process(t_conn *conn)
 {
     t_ircmsg    msg = {0, 0, {0}, 0, {{0}, 0}};
     t_tinymsg   tmsg = {{0}, 0};
@@ -75,13 +68,13 @@ void        conn_msg_process(t_conn *conn)
     if (ircmsg_parse(&msg, &tmsg))
     {
         ircmsg_free(&msg);
-        server_drop(CONN_SERVER(conn), conn);
+        conn->ops->on_error(conn, CONN_ERR_PARSE);
         return ;
     }
     if (!ircmsg_empty(&msg))
     {
         ircmsg_dump(&msg);
-        ircmsg_handle(&msg, conn);
+        conn->ops->on_message(conn, &msg);
     }
     ircmsg_free(&msg);
 }

@@ -1,27 +1,28 @@
 #include <sys/select.h>
 #include "conn.h"
 #include "conn_vlist.h"
+#include "ircmsg.h"
 #include "server_conn.h"
 
-void    conn_read_cb(void *c, void *readfdset)
+void    server_conn_cb_recv(void *c, void *readfdset)
 {
     fd_set  *rd_fd_set = readfdset;
     t_conn  *conn = c;
 
     if (FD_ISSET(conn->fd, rd_fd_set) && !conn->disconnecting)
-        conn_read(conn);
+        conn_recv(conn);
 }
 
-void    conn_write_cb(void *c, void *writefdset)
+void    server_conn_cb_send(void *c, void *writefdset)
 {
     fd_set  *wr_fd_set = writefdset;
     t_conn  *conn = c;
 
     if (FD_ISSET(conn->fd, wr_fd_set))
-        conn_write(conn);
+        conn_send(conn);
 }
 
-void    conn_msg_handle_cb(void *c, void *unused)
+void    server_conn_cb_msg_handle(void *c, void *unused)
 {
     t_conn  *conn = c;
 
@@ -31,7 +32,7 @@ void    conn_msg_handle_cb(void *c, void *unused)
         conn_msg_process(conn);
 }
 
-void    conn_disconnect_cb(void *c, void *unused)
+void    server_conn_cb_disconnect(void *c, void *unused)
 {
     t_conn  * const conn = c;
 
@@ -40,7 +41,7 @@ void    conn_disconnect_cb(void *c, void *unused)
         server_drop_now(CONN_SERVER(conn), conn);
 }
 
-void    conn_disconnect_now_cb(void *c, void *unused)
+void    server_conn_cb_disconnect_now(void *c, void *unused)
 {
     t_conn  * const conn = c;
 

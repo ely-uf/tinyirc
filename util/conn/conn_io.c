@@ -1,10 +1,9 @@
 #include <stdbool.h>
 #include <errno.h>
+#include "conn.h"
 #include "logger.h"
-#include "server.h"
-#include "server_conn.h"
 
-void    conn_read(t_conn *conn)
+void    conn_recv(t_conn *conn)
 {
     char    buf[4096];
     ssize_t recvb;
@@ -18,7 +17,7 @@ void    conn_read(t_conn *conn)
         if (recvb <= 0)
         {
             if (recvb == 0 || errno != EINTR)
-                server_drop_now(CONN_SERVER(conn), conn);
+                conn->ops->on_error(conn, CONN_ERR_READ);
             return ;
         }
         LOG(L_DEBUG, "Read %zu bytes.\n", (size_t)recvb);
@@ -26,7 +25,7 @@ void    conn_read(t_conn *conn)
         if (put != recvb)
         {
             LOG(L_WARN, "Possible OOM! Dropping connection.\n");
-            server_drop_now(CONN_SERVER(conn), conn);
+            conn->ops->on_error(conn, CONN_ERR_READ);
             return ;
         }
         if ((size_t)recvb < sizeof(buf))
@@ -34,7 +33,7 @@ void    conn_read(t_conn *conn)
     }
 }
 
-void    conn_write(t_conn *conn)
+void    conn_send(t_conn *conn)
 {
     char    buf[4096];
     ssize_t sendb;
@@ -49,7 +48,7 @@ again:
         {
             if (errno == EINTR)
                 goto again;
-            server_drop_now(CONN_SERVER(conn), conn);
+            conn->ops->on_error(conn, CONN_ERR_WRITE);
             return ;
         }
         if (sendb != pulled)

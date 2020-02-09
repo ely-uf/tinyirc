@@ -7,8 +7,6 @@
 # include "conn.h"
 # include "channel.h"
 
-typedef struct  s_conn  t_conn;
-
 typedef struct  s_server
 {
     bool                alive;
