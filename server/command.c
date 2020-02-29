@@ -17,6 +17,7 @@ static t_command const  g_command_list[] = {
             "the connection is made.  Currently this requires that user send a\n"
             "PASS command before sending the NICK/USER combination.",
         .fn = command_pass,
+        .flags = CF_NONE,
     },
     {
         .cmdname = "NICK",
@@ -25,6 +26,7 @@ static t_command const  g_command_list[] = {
             "NICK command is used to give user a nickname or change the existing\n"
             "one.",
         .fn = command_nick,
+        .flags = CF_NONE,
     },
     {
         .cmdname = "JOIN",
@@ -36,6 +38,7 @@ static t_command const  g_command_list[] = {
             "form of a list of target, but SHOULD NOT use lists when sending JOIN\n"
             "messages to clients.",
         .fn = command_join,
+        .flags = CF_REGISTRATION_REQUIRED,
     },
     {
         .cmdname = "PRIVMSG",
@@ -45,6 +48,7 @@ static t_command const  g_command_list[] = {
             "send messages to channels.  <msgtarget> is usually the nickname of\n"
             "the recipient of the message, or a channel name.",
         .fn = command_privmsg,
+        .flags = CF_REGISTRATION_REQUIRED,
     },
     {
         .cmdname = "QUIT",
@@ -53,6 +57,7 @@ static t_command const  g_command_list[] = {
             "A client session is terminated with a quit message.  The server\n"
             "acknowledges this by sending an ERROR message to the client.",
         .fn = command_quit,
+        .flags = CF_NONE,
     },
     {
         .cmdname = "HELP",
@@ -60,24 +65,13 @@ static t_command const  g_command_list[] = {
         .description =
             "HELP is used to get the description of available commands.",
         .fn = command_help,
+        .flags = CF_NONE,
     },
-};
-
-static char const       *g_command_list_no_reg[] = {
-    "PASS",
-    "NICK",
-    "QUIT",
-    "HELP",
 };
 
 static bool     command_requires_registration(t_command const * cmd)
 {
-    for (size_t i = 0; i < ARRAY_LEN(g_command_list_no_reg); i++)
-    {
-        if (strcmp(cmd->cmdname, g_command_list_no_reg[i]) == 0)
-            return (false);
-    }
-    return (true);
+    return cmd->flags & CF_REGISTRATION_REQUIRED;
 }
 
 t_command const *command_lookup(char const *name)

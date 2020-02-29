@@ -9,7 +9,7 @@ int     err_notregistered(t_conn *conn, int argc, char **argv)
     t_ircmsg    response = {
         .command = cmdbuf,
         .nparams = 1,
-        .params[0] = "You have not registered"
+        .params[0] = "You are not registered"
     };
 
     (void)argc;
